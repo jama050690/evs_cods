@@ -44,11 +44,11 @@ a:active {
   align-items: center;
 }
 
-.videos-page .container {
-  width: 500px;
+.container {
+  max-width: 500px;
   text-align: center;
-  height: 90vh;
-  background: blue;
+  max-height: full;
+  background: burlywood;
   border-radius: 12px;
 }
 
