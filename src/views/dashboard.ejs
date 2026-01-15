@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Dashboard</title>
+  </head>
+  <body class="videos-page">
+    <div class="container">
+      <h3>Video list</h3>
+      <ul>
+        <% videos.forEach(v => { %>
+        <li>
+          <a
+            href="/dashboard?v=<%= v %>"
+            class="<%= current === v ? 'active' : '' %>"
+          >
+            <%= v %>
+          </a>
+        </li>
+        <% }) %>
+      </ul>
+
+      <!-- VIDEO PLAYER -->
+      <div>
+        <% if (current) { %>
+        <h3>Playing: <%= current %></h3>
+        <video controls autoplay>
+          <source src="/uploads/<%= current %>" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <% } else { %>
+        <p>Select a video from the list</p>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>

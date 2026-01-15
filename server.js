@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import path from "path";
 
 const app = express();
@@ -14,6 +15,7 @@ const __dirname = path.dirname(__filename);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
 app.use(express.static(path.join(__dirname, "public")));
+
 // ===== MULTER =====
 const storage = multer.diskStorage({
   destination: path.join(__dirname, "uploads"),
@@ -39,6 +41,25 @@ app.get("/signup", (req, res) => {
 
 app.post("/signup", upload.single("profile_picture"), (req, res) => {
   res.redirect(`/?success=1&video=${req.file.filename}`);
+});
+
+// ===== VIDEOS LIST PAGE =====
+app.get("/dashboard", (req, res) => {
+  const uploadsDir = path.join(__dirname, "uploads");
+  const current = req.query.v;
+
+  fs.readdir(uploadsDir, (err, files) => {
+    if (err) {
+      return res.render("dashboard", { videos: [], current: null });
+    }
+
+    const videos = files.filter((f) => f.endsWith(".mp4"));
+
+    res.render("dashboard", {
+      videos,
+      current,
+    });
+  });
 });
 
 // ===== START =====

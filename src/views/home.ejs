@@ -7,21 +7,22 @@
     <title>Home</title>
   </head>
   <body>
-    <h1>Home</h1>
+    <div class="card">
+      <h1>Home</h1>
 
-    <% if ( success && video ) { %>
+      <% if ( success && video ) { %>
+      <p>Successfull!</p>
 
-    <p>Successfull!</p>
+      <video controls width="400">
+        <source src="/uploads/<%= video %>" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <% } else { %>
 
-    <video controls width="400">
-      <source src="/uploads/<%= video %>" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+      <a href="/signup">Sign Up</a>
 
-    <% } else { %>
-
-    <a href="/signup">Sign Up</a>
-
-    <% } %>
+      <a href="/dashboard">Dashboard</a>
+      <% } %>
+    </div>
   </body>
 </html>
