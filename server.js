@@ -95,13 +95,38 @@ app.get("/dashboard", (req, res) => {
 });
 
 // VIEW (ixtiyoriy, agar kerak bo‘lsa)
-app.get("/video/:id", (req, res) => {
+app.get("/video/:id.mp4", (req, res) => {
   const files = readJSON();
   const file = files.find((f) => f.id == req.params.id);
 
-  if (!file) return res.send("File not found");
+  if (!file) return res.status(404).send("File not found");
 
   res.render("video", { file });
+});
+
+// MP4 STREAM (URL .mp4 bilan)
+app.get("/video/:id.mp4", (req, res) => {
+  const files = readJSON();
+  const file = files.find((f) => f.id == req.params.id);
+
+  if (!file) return res.status(404).send("File not found");
+
+  const videoPath = path.join(__dirname, file.path);
+
+  res.setHeader("Content-Type", "video/mp4");
+  res.sendFile(videoPath);
+});
+
+app.get("/stream/:id", (req, res) => {
+  const files = readJSON();
+  const file = files.find((f) => f.id == req.params.id);
+
+  if (!file) return res.status(404).send("File not found");
+
+  const videoPath = path.join(__dirname, file.path);
+
+  res.setHeader("Content-Type", "video/mp4");
+  res.sendFile(videoPath);
 });
 
 // ===== START =====

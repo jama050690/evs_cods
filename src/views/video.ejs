@@ -7,12 +7,12 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="box">
       <h2><%= file.fileName %></h2>
 
       <% if (file.category === "video") { %>
       <video controls width="700">
-        <source src="<%= file.path %>" />
+        <source src="/stream/<%= file.id %>" type="video/mp4" />
       </video>
       <% } else { %>
       <img src="<%= file.path %>" width="500" />

@@ -51,6 +51,24 @@ a:active {
   background: burlywood;
   border-radius: 12px;
 }
+.box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background: blueviolet;
+  border-radius: 12px;
+
+  max-width: 500px;
+  width: 90%;
+
+  text-align: center;
+
+  max-height: 90vh;
+  padding: 20px;
+  color: white;
+}
 
 ul {
   list-style: none;
