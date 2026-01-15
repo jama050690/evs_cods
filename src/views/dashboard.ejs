@@ -5,34 +5,26 @@
     <link rel="stylesheet" href="/css/style.css" />
     <title>Dashboard</title>
   </head>
-  <body class="videos-page">
+
+  <body>
     <div class="container">
-      <h3>Video list</h3>
+      <h2>Uploaded files</h2>
+
+      <% if (files.length === 0) { %>
+      <p>No files uploaded yet</p>
+      <% } else { %>
       <ul>
-        <% videos.forEach(v => { %>
+        <% files.forEach(f => { %>
         <li>
-          <a
-            href="/dashboard?v=<%= v %>"
-            class="<%= current === v ? 'active' : '' %>"
-          >
-            <%= v %>
+          <!-- LINK -->
+          <a href="/video/<%= f.id %>">
+            <b><%= f.fileName %></b>
           </a>
+          (<%= f.category %>)
         </li>
         <% }) %>
       </ul>
-
-      <!-- VIDEO PLAYER -->
-      <div>
-        <% if (current) { %>
-        <h3>Playing: <%= current %></h3>
-        <video controls autoplay>
-          <source src="/uploads/<%= current %>" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <% } else { %>
-        <p>Select a video from the list</p>
-        <% } %>
-      </div>
+      <% } %>
     </div>
   </body>
 </html>

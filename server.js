@@ -5,64 +5,106 @@ import fs from "fs";
 import path from "path";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // ===== ESM __dirname =====
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// ===== MIDDLEWARE =====
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ===== VIEW ENGINE =====
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
+// ===== UPLOADS DIR =====
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // ===== MULTER =====
 const storage = multer.diskStorage({
-  destination: path.join(__dirname, "uploads"),
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) =>
+    cb(null, Date.now() + path.extname(file.originalname)),
 });
 const upload = multer({ storage });
 
-// ===== STATIC =====
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// ===== JSON DATA =====
+const dataDir = path.join(__dirname, "data");
+const DATA_FILE = path.join(dataDir, "files.json");
+
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, "[]");
+
+const readJSON = () => JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
+
+const writeJSON = (data) =>
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+
+// ===== STATIC UPLOADS =====
+app.use("/uploads", express.static(uploadDir));
 
 // ===== ROUTES =====
+
+// HOME
 app.get("/", (req, res) => {
-  const success = req.query.success === "1";
-  const video = req.query.video;
-  res.render("home", { success, video });
+  res.render("home", {
+    success: false,
+    video: null,
+    image: null,
+  });
 });
 
+// SIGNUP PAGE
 app.get("/signup", (req, res) => {
   res.render("signup");
 });
 
+// SIGNUP POST (UPLOAD)
 app.post("/signup", upload.single("profile_picture"), (req, res) => {
-  res.redirect(`/?success=1&video=${req.file.filename}`);
+  if (!req.file) {
+    return res.status(400).send("File not uploaded");
+  }
+
+  const files = readJSON();
+  const ext = path.extname(req.file.originalname).slice(1);
+
+  files.push({
+    id: Date.now(),
+    fileName: req.file.originalname,
+    type: ext,
+    category: ["png", "jpg", "jpeg"].includes(ext) ? "image" : "video",
+    path: "/uploads/" + req.file.filename,
+  });
+
+  writeJSON(files);
+
+  // MUHIM: signupdan keyin dashboard ochiladi
+  res.redirect("/dashboard");
 });
 
-// ===== VIDEOS LIST PAGE =====
+// DASHBOARD
 app.get("/dashboard", (req, res) => {
-  const uploadsDir = path.join(__dirname, "uploads");
-  const current = req.query.v;
+  const files = readJSON();
+  res.render("dashboard", { files });
+});
 
-  fs.readdir(uploadsDir, (err, files) => {
-    if (err) {
-      return res.render("dashboard", { videos: [], current: null });
-    }
+// VIEW (ixtiyoriy, agar kerak bo‘lsa)
+app.get("/video/:id", (req, res) => {
+  const files = readJSON();
+  const file = files.find((f) => f.id == req.params.id);
 
-    const videos = files.filter((f) => f.endsWith(".mp4"));
+  if (!file) return res.send("File not found");
 
-    res.render("dashboard", {
-      videos,
-      current,
-    });
-  });
+  res.render("video", { file });
 });
 
 // ===== START =====
 app.listen(PORT, () => {
-  console.log(" Server running on http://localhost:" + PORT);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

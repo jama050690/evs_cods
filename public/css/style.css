@@ -70,3 +70,16 @@ a.active {
   font-weight: bold;
   color: #000;
 }
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: #000;
+  padding: 20px;
+  border-radius: 8px;
+}
