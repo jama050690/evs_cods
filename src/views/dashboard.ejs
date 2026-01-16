@@ -10,21 +10,14 @@
     <div class="container">
       <h2>Uploaded files</h2>
 
-      <% if (files.length === 0) { %>
-      <p>No files uploaded yet</p>
-      <% } else { %>
       <ul>
         <% files.forEach(f => { %>
-        <li>
-          <!-- LINK -->
-          <a href="/video/<%= f.id %>">
-            <b><%= f.fileName %></b>
-          </a>
-          (<%= f.category %>)
-        </li>
+          <li>
+            <b><%= f.fileName %></b> (<%= f.category %>)
+            <a href="/view/<%= f.id %>">View</a>
+          </li>
         <% }) %>
       </ul>
-      <% } %>
     </div>
   </body>
 </html>

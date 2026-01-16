@@ -3,24 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="/css/style.css" />
-    <title>View File</title>
+    <title>View file</title>
   </head>
 
   <body>
     <div class="box">
       <h2><%= file.fileName %></h2>
-
-      <% if (file.category === "video") { %>
-      <video controls width="700">
-        <source src="/stream/<%= file.id %>" type="video/mp4" />
+      <% if (file.category === "image") { %>
+      <img src="/<%= file.path %>" style="max-width: 600px" />
+      <% } %> <% if (file.category === "video") { %>
+      <video controls width="600">
+        <source src="/<%= file.path %>" type="video/mp4" />
       </video>
-      <% } else { %>
-      <img src="<%= file.path %>" width="500" />
       <% } %>
 
-      <p style="margin-top: 20px">
-        <a href="/dashboard">⬅ Back to dashboard</a>
-      </p>
+      <br /><br />
+      <a href="/dashboard">⬅ Back to dashboard</a>
     </div>
   </body>
 </html>

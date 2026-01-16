@@ -10,10 +10,13 @@
     <h1>Home</h1>
 
     <% if (success && video) { %>
-    <p>Successfully uploaded!</p>
+    <p>Successfully uploaded video!</p>
     <video controls width="400">
       <source src="<%= video %>" />
     </video>
+    <% } %> <% if (success && images) { %>
+    <p>Successfully uploaded image!</p>
+    <img src="<%= images %>" width="400" />
     <% } %>
 
     <p>

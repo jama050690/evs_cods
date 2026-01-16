@@ -42,7 +42,6 @@ if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, "[]");
 
 const readJSON = () => JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
-
 const writeJSON = (data) =>
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 
@@ -53,11 +52,7 @@ app.use("/uploads", express.static(uploadDir));
 
 // HOME
 app.get("/", (req, res) => {
-  res.render("home", {
-    success: false,
-    video: null,
-    image: null,
-  });
+  res.render("home");
 });
 
 // SIGNUP PAGE
@@ -67,9 +62,7 @@ app.get("/signup", (req, res) => {
 
 // SIGNUP POST (UPLOAD)
 app.post("/signup", upload.single("profile_picture"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("File not uploaded");
-  }
+  if (!req.file) return res.status(400).send("File not uploaded");
 
   const files = readJSON();
   const ext = path.extname(req.file.originalname).slice(1);
@@ -77,14 +70,11 @@ app.post("/signup", upload.single("profile_picture"), (req, res) => {
   files.push({
     id: Date.now(),
     fileName: req.file.originalname,
-    type: ext,
-    category: ["png", "jpg", "jpeg"].includes(ext) ? "image" : "video",
-    path: "/uploads/" + req.file.filename,
+    category: ["png", "jpg", "jpeg", "webp"].includes(ext) ? "image" : "video",
+    path: "uploads/" + req.file.filename,
   });
 
   writeJSON(files);
-
-  // MUHIM: signupdan keyin dashboard ochiladi
   res.redirect("/dashboard");
 });
 
@@ -94,39 +84,13 @@ app.get("/dashboard", (req, res) => {
   res.render("dashboard", { files });
 });
 
-// VIEW (ixtiyoriy, agar kerak bo‘lsa)
-app.get("/video/:id.mp4", (req, res) => {
+// VIEW (IMAGE + VIDEO)
+app.get("/view/:id", (req, res) => {
   const files = readJSON();
   const file = files.find((f) => f.id == req.params.id);
-
   if (!file) return res.status(404).send("File not found");
 
   res.render("video", { file });
-});
-
-// MP4 STREAM (URL .mp4 bilan)
-app.get("/video/:id.mp4", (req, res) => {
-  const files = readJSON();
-  const file = files.find((f) => f.id == req.params.id);
-
-  if (!file) return res.status(404).send("File not found");
-
-  const videoPath = path.join(__dirname, file.path);
-
-  res.setHeader("Content-Type", "video/mp4");
-  res.sendFile(videoPath);
-});
-
-app.get("/stream/:id", (req, res) => {
-  const files = readJSON();
-  const file = files.find((f) => f.id == req.params.id);
-
-  if (!file) return res.status(404).send("File not found");
-
-  const videoPath = path.join(__dirname, file.path);
-
-  res.setHeader("Content-Type", "video/mp4");
-  res.sendFile(videoPath);
 });
 
 // ===== START =====
