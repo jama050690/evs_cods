@@ -54,7 +54,7 @@ a:active {
 .box,
 .bock {
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
 
@@ -101,4 +101,26 @@ a.active {
   background: #000;
   padding: 20px;
   border-radius: 8px;
+}
+form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+button {
+  border: 3px solid;
+  padding: 14px;
+  background: red;
+  border-radius: 25px;
+  color: aqua;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+button:hover {
+  transform: scale(1.1);
+}
+input {
+  border-radius: 11px;
+  padding: 16px;
+  background: turquoise;
 }
