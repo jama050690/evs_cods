@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark only;
+  background: linear-gradient(to right, hsl(228, 95%, 15%), #0a2ab994);
 }
 video {
   background: black;
@@ -51,7 +51,8 @@ a:active {
   background: burlywood;
   border-radius: 12px;
 }
-.box {
+.box,
+.bock {
   position: absolute;
   top: 50%;
   left: 50%;

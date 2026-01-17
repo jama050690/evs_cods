@@ -52,9 +52,14 @@ app.use("/uploads", express.static(uploadDir));
 
 // HOME
 app.get("/", (req, res) => {
-  res.render("home");
-});
+  const success = req.query.success === "1";
+  const video = req.query.video || null;
 
+  res.render("home", {
+    success,
+    video,
+  });
+});
 // SIGNUP PAGE
 app.get("/signup", (req, res) => {
   res.render("signup");
